@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import Form from './Form'
 
 const URL = 'http://localhost:9000/api/todos'
 
@@ -7,18 +8,18 @@ export default class App extends React.Component {
   state = {
     todos: [],
     error: '',
-    input: '', 
+    nameInput: '', 
     displayCompleted: true,
   }
   onInputChange = evt => {
     const { value } = evt.target
-    this.setState({ ...this.state, input: value })
+    this.setState({ ...this.state, nameInput: value })
   }
   postNewTodo = () => {
-    axios.post(URL, { name: this.state.input })
+    axios.post(URL, { name: this.state.nameInput })
       .then(res => {
         this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data) })
-        this.setState({ ...this.state, input: '' })
+        this.setState({ ...this.state, nameInput: '' })
       })
       .catch(err => {
         this.setState({ ...this.state, error: err.response.data.message})
@@ -73,16 +74,13 @@ export default class App extends React.Component {
             }, [])
            }
         </div>
-        <form id="todoForm" onSubmit={this.onTodoSubmit}>
-          <input 
-            onChange={this.onInputChange} 
-            value={this.state.input} 
-            type="text"
-            placeholder='Type todo'>
-          </input>
-          <button type="submit">Submit</button> <br/>
-          <button type="button" onClick={this.toggleDisplayCompleted}>{this.state.displayCompleted ? 'Hide' : 'Show'} Completed</button>
-        </form>
+        <Form 
+          onTodoSubmit={this.onTodoSubmit}
+          onInputChange={this.onInputChange}
+          toggleDisplayCompleted={this.toggleDisplayCompleted}
+          nameInput={this.state.nameInput}
+          displayCompleted={this.state.displayCompleted}
+        />
       </div>      
     )
   }
